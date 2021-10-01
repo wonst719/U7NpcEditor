@@ -89,7 +89,7 @@ void WriteFile(const std::string fileName, const std::vector<byte>& vec)
     os.write(bytes, outLength);
 }
 
-void ReadNpc(int i, byte*& bytes, const char* replacedName)
+void ReplaceNpcName(int i, byte*& bytes, const char* replacedName)
 {
     if (strlen(replacedName) > 16)
     {
@@ -240,7 +240,7 @@ int main(int argc, char** argv)
     bytes += 2;
 
     for (int i = 0; i < num_npcs; i++)
-        ReadNpc(i, bytes, nameVec[i].c_str());
+        ReplaceNpcName(i, bytes, nameVec[i].c_str());
 
     WriteFile(outputFileName, file);
 
