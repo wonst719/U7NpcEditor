@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include <fstream>
+#include <string>
 #include <vector>
 #include <cassert>
 #include <cstdint>
@@ -151,30 +152,21 @@ std::vector<std::string> ReadTrans(const std::string& fileName)
 {
     std::vector<std::string> nameVec;
 
-    FILE* koreanNameFile;
-    errno_t err = fopen_s(&koreanNameFile, fileName.c_str(), "rb");
-    if (err != 0)
-    {
-        throw std::exception("Could not open trans");
-    }
+    std::ifstream is(fileName);
 
+    std::string str;
     int i = 0;
-    while (!feof(koreanNameFile))
+
+    while (std::getline(is, str))
     {
-        char lineBuf[256 + 1] = { 0, };
-        fgets(lineBuf, 256, koreanNameFile);
-        if (strlen(lineBuf) > 0 && (lineBuf[strlen(lineBuf) - 1] == '\r' || lineBuf[strlen(lineBuf) - 1] == '\n'))
-            lineBuf[strlen(lineBuf) - 1] = 0;
-        if (strlen(lineBuf) > 0 && (lineBuf[strlen(lineBuf) - 1] == '\r' || lineBuf[strlen(lineBuf) - 1] == '\n'))
-            lineBuf[strlen(lineBuf) - 1] = 0;
         int id;
-        sscanf_s(lineBuf, "%x", &id);
+        sscanf_s(str.c_str(), "%x", &id);
 
         if (id != i)
         {
             throw std::exception("ID mismatch");
         }
-        char* split = strchr(lineBuf, ' ');
+        const char* split = strchr(str.c_str(), ' ');
         if (split == nullptr)
         {
             nameVec.push_back("");
@@ -186,8 +178,6 @@ std::vector<std::string> ReadTrans(const std::string& fileName)
 
         i++;
     }
-
-    fclose(koreanNameFile);
 
     return nameVec;
 }
